@@ -186,7 +186,6 @@ void Lexer::Extract_StringLiteral()
     if (feof(program))
         throw std::runtime_error("Exprected char after \".");
     char c = fgetc(program);
-    std::cout << c << std::endl;
     std::string res;
     while (!feof(program) && (is_alphabetic(c) || is_digit(c) || lang_symbols.contains(std::string{c})))
     {
@@ -209,9 +208,9 @@ void Lexer::Extract_StringLiteral()
         c = fgetc(program);
     }
     if (feof(program))
-        throw std::runtime_error("Expected 1\"");
+        throw std::runtime_error("Expected \"");
     if (c != '\"')
-        throw std::runtime_error("Expected 2\"");
+        throw std::runtime_error("Expected \"");
     tokens.push_back(Token{TokenTypes::StringLiteral, res});
 }
 
