@@ -2,15 +2,19 @@
 #include <string>
 enum class TokenTypes
 {
-    INDENTIFIERS,  // Имена переменных и функций
-    NUMBER,        // числа и цифры, цифры и числа
-    OPERATOR,      // , / . / > / < / = / + / - / / / * / % / ^
-    LPAREN,        // (, [, {
-    RPAREN,        // ), ], }
-    RESERVEDWORDS, // зарезервированные слова {if, else...}
-    TYPES,         // Имена типов
-    CharLiteral,   // '
-    StringLiteral  // "
+    INDENTIFIER,
+    INT_LITERAL,
+    DOUBLE_LITERAL,
+    OPERATOR,
+    LPAREN,
+    RPAREN,
+    RESERVEDWORDS,
+    TYPES,
+    CHAR_LITERAL,
+    STRING_LITERAL,
+    BOOL_LITERAL,
+    INVALID,
+    END
 };
 
 struct Token

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include "lexer.hpp"
 
 Lexer::Lexer(const char *filename)
@@ -12,24 +13,21 @@ void Lexer::tokenize()
     while (!feof(program))
     {
         c = fgetc(program);
-        if (is_digit(c))
+        if (std::isdigit(c))
         {
             ungetc(c, program);
             Extract_Number();
+            continue;
         }
-        if (is_alphabetic(c) || c == '_')
+        if (std::isalpha(c) || c == '_')
         {
             ungetc(c, program);
             Extract_Identifier();
-        }
-        if (is_whitespace(c))
-        {
             continue;
         }
-        if (is_operator(c))
+        if (std::isblank(c) || c == '\n' || c == '\0' || c == '\r' || c == '\t')
         {
-            ungetc(c, program);
-            Extract_Operator();
+            continue;
         }
         if (is_lparent(c))
         {
@@ -41,48 +39,38 @@ void Lexer::tokenize()
             tokens.push_back(Token{TokenTypes::RPAREN, std::string{c}});
             continue;
         }
+        if (is_operator(c))
+        {
+            ungetc(c, program);
+            Extract_Operator();
+            continue;
+        }
         if (c == '\"')
         {
-            Extract_StringLiteral();
+            Extract_String();
+            continue;
         }
         if (c == '\'')
         {
-            Extract_CharLiteral();
+            Extract_Char();
+            continue;
         }
+        if ((int)c == -1)
+            break;
+        tokens.push_back(Token{TokenTypes::INVALID});
     }
+    tokens.push_back(Token{TokenTypes::END});
 }
 
-bool Lexer::is_digit(char c)
+bool Lexer::is_operator(char c) const
 {
-    if (c <= '9' && c >= '0')
+    if (lang_symbols.contains(std::string{c}))
     {
         return true;
     }
     return false;
 }
-bool Lexer::is_alphabetic(char c)
-{
-    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-    {
-        return true;
-    }
-    return false;
-}
-bool Lexer::is_whitespace(char c)
-{
-    if (c == ' ' || c == '\t' || c == '\n')
-        return true;
-    return false;
-}
-bool Lexer::is_operator(char c)
-{
-    if (lang_operators.contains(std::string{c}))
-    {
-        return true;
-    }
-    return false;
-}
-bool Lexer::is_lparent(char c)
+bool Lexer::is_lparent(char c) const
 {
     if (c == '[' || c == '{' || c == '(')
     {
@@ -90,7 +78,7 @@ bool Lexer::is_lparent(char c)
     }
     return false;
 }
-bool Lexer::is_rparent(char c)
+bool Lexer::is_rparent(char c) const
 {
     if (c == ']' || c == ')' || c == '}')
     {
@@ -103,7 +91,7 @@ void Lexer::Extract_Number()
 {
     char c = fgetc(program);
     std::string res;
-    while (is_digit(c) && !feof(program))
+    while (std::isdigit(c) && !feof(program))
     {
         res += c;
         c = fgetc(program);
@@ -112,25 +100,28 @@ void Lexer::Extract_Number()
     {
         res += c;
         c = fgetc(program);
-        while (is_digit(c) && !feof(program))
+        while (std::isdigit(c) && !feof(program))
         {
             res += c;
             c = fgetc(program);
         }
         ungetc(c, program);
+        tokens.push_back(Token{TokenTypes::DOUBLE_LITERAL, res});
+        return;
     }
     else
     {
         ungetc(c, program);
     }
-    tokens.push_back(Token{TokenTypes::NUMBER, res});
+    tokens.push_back(Token{TokenTypes::INT_LITERAL, res});
 }
 
-void Lexer::Extract_Identifier()
+void
+Lexer::Extract_Identifier()
 {
     char c = fgetc(program);
     std::string res;
-    while ((is_alphabetic(c) || is_digit(c) || c == '_') && !feof(program))
+    while ((std::isalpha(c) || std::isdigit(c) || c == '_') && !feof(program))
     {
         res += c;
         c = fgetc(program);
@@ -146,10 +137,16 @@ void Lexer::Extract_Identifier()
         tokens.push_back(Token{TokenTypes::TYPES, res});
         return;
     }
-    tokens.push_back(Token{TokenTypes::INDENTIFIERS, res});
+    if (res == "true" || res == "false")
+    {
+        tokens.push_back(Token{TokenTypes::BOOL_LITERAL, res});
+        return;
+    }
+    tokens.push_back(Token{TokenTypes::INDENTIFIER, res});
 }
 
-void Lexer::Extract_CharLiteral()
+void
+Lexer::Extract_Char()
 {
     if (feof(program))
         throw std::runtime_error("Expected char after \'");
@@ -178,16 +175,17 @@ void Lexer::Extract_CharLiteral()
     c = fgetc(program);
     if (c != '\'')
         throw std::runtime_error("Expected \'.");
-    tokens.push_back(Token{TokenTypes::CharLiteral, res});
+    tokens.push_back(Token{TokenTypes::CHAR_LITERAL, res});
 }
 
-void Lexer::Extract_StringLiteral()
+void
+Lexer::Extract_String()
 {
     if (feof(program))
         throw std::runtime_error("Exprected char after \".");
     char c = fgetc(program);
     std::string res;
-    while (!feof(program) && (is_alphabetic(c) || is_digit(c) || lang_symbols.contains(std::string{c})))
+    while (!feof(program) && (std::isalpha(c) || std::isdigit(c) || lang_symbols.contains(std::string{c})))
     {
         if (c == '\\')
         {
@@ -211,10 +209,11 @@ void Lexer::Extract_StringLiteral()
         throw std::runtime_error("Expected \"");
     if (c != '\"')
         throw std::runtime_error("Expected \"");
-    tokens.push_back(Token{TokenTypes::StringLiteral, res});
+    tokens.push_back(Token{TokenTypes::STRING_LITERAL, res});
 }
 
-void Lexer::Extract_Operator()
+void
+Lexer::Extract_Operator()
 {
     char c = fgetc(program);
     std::string res;
