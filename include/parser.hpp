@@ -1,15 +1,26 @@
+#pragma once
 #include <vector>
 #include <memory>
+#include <unordered_map>
 #include "token.hpp"
 #include "Abstract Syntax Tree.hpp"
 
 class Parser
 {
 public:
-    Parser(std::vector<Token> build_list);
-    std::shared_ptr<ASTNode> parse();
+    void parse();
+    Parser(std::vector<Token> &tokens) : tokenslist(tokens){};
 
 private:
+    /********************
+     *     Service      *
+     ********************/
+
+    bool MatchToken(const TokenType &, const std::string &);
+    std::vector<std::shared_ptr<ASTNode>> ASTresult;
+    std::vector<Token> tokenslist;
+    int offset;
+
     /********************
      *    Statements    *
      ********************/
@@ -23,19 +34,16 @@ private:
     /********************
      *   Expressions    *
      ********************/
-
     std::shared_ptr<ASTNode> parse_binaryexpression();
     std::shared_ptr<ASTNode> parse_unaryexpression();
     std::shared_ptr<ASTNode> parse_functionexpression();
-    std::shared_ptr<ASTNode> parse_variabelacces();
+    std::shared_ptr<ASTNode> parse_identifiernode();
     std::shared_ptr<ASTNode> parse_literal();
+    std::shared_ptr<ASTNode> parse_assignment();
 
     /********************
      *   Declarations   *
      ********************/
-
     std::shared_ptr<ASTNode> parse_variabledeclaration();
     std::shared_ptr<ASTNode> parse_functiondeclaration();
-
-    std::vector<Token> list;
-}
+};

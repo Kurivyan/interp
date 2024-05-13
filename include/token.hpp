@@ -1,15 +1,15 @@
 #pragma once
 #include <string>
-enum class TokenTypes
+enum class TokenType
 {
     INDENTIFIER,
-    INT_LITERAL,
-    DOUBLE_LITERAL,
+    RESERVEDWORDS,
     OPERATOR,
     LPAREN,
     RPAREN,
-    RESERVEDWORDS,
     TYPES,
+    INT_LITERAL,
+    DOUBLE_LITERAL,
     CHAR_LITERAL,
     STRING_LITERAL,
     BOOL_LITERAL,
@@ -19,10 +19,10 @@ enum class TokenTypes
 
 struct Token
 {
-    TokenTypes type;
+    TokenType type;
     std::string name;
 
-    bool operator==(TokenTypes other_token) const
+    bool operator==(TokenType other_token) const
     {
         return type == other_token;
     }
@@ -30,5 +30,15 @@ struct Token
     bool operator==(const std::string &other_name) const
     {
         return name == other_name;
+    }
+
+    bool operator!=(TokenType other_token) const
+    {
+        return type != other_token;
+    }
+
+    bool operator!=(const std::string &other_name) const
+    {
+        return name != other_name;
     }
 };

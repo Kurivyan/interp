@@ -1,14 +1,17 @@
 #pragma once
+#include <string>
 #include "Abstract Syntax Tree.hpp"
+
+struct VariableDeclaration;
 
 /***************************************
  *           Expressions.hpp           *
  *          BinaryExpression           *
  ***************************************/
 
-struct BinaryExpression : ExpressionNode
+struct BinaryExpression : public ExpressionNode
 {
-    std::string operator;
+    std::string op;
     std::shared_ptr<ExpressionNode> operand_l;
     std::shared_ptr<ExpressionNode> operand_r;
 };
@@ -20,8 +23,17 @@ struct BinaryExpression : ExpressionNode
 
 struct UnaryExpression : ExpressionNode
 {
-    std::string operator;
+    virtual ~UnaryExpression() = default;
+};
+
+struct PrefixExpression : UnaryExpression
+{
+    std::string op;
     std::shared_ptr<ExpressionNode> operand;
+};
+
+struct PostfixExpression : PrefixExpression
+{
 };
 
 /***************************************
@@ -32,7 +44,7 @@ struct UnaryExpression : ExpressionNode
 struct FunctionExpression : ExpressionNode
 {
     std::string function_name;
-    std::vector<std::shared_ptr<VariableDeclaration>> arguments;
+    std::vector<std::shared_ptr<ExpressionNode>> arguments;
 };
 
 /***************************************
@@ -40,7 +52,7 @@ struct FunctionExpression : ExpressionNode
  *            VariabelAcces            *
  ***************************************/
 
-struct VariableAcces : ExpressionNode
+struct IdentifierNode : ExpressionNode
 {
     std::string var_name;
 };
@@ -53,4 +65,15 @@ struct VariableAcces : ExpressionNode
 struct Literal : ExpressionNode
 {
     std::string value;
+};
+
+/***************************************
+ *           Expressions.hpp           *
+ *             Assginment              *
+ ***************************************/
+
+struct AssignmentExpression : ExpressionNode
+{
+    std::shared_ptr<VariableDeclaration> var;
+    std::shared_ptr<ExpressionNode> val;
 };

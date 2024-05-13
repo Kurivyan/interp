@@ -1,8 +1,6 @@
+#pragma once
 #include <vector>
 #include <memory>
-#include "Statments.hpp"
-#include "Declarations.hpp"
-#include "Expressions.hpp"
 
 struct ASTNode
 {
@@ -23,3 +21,7 @@ struct DeclarationNode : ASTNode
 {
     virtual ~DeclarationNode() = default;
 };
+
+#include "Expressions.hpp"
+#include "Declarations.hpp"
+#include "Statments.hpp"

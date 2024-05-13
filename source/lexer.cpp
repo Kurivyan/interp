@@ -31,12 +31,12 @@ void Lexer::tokenize()
         }
         if (is_lparent(c))
         {
-            tokens.push_back(Token{TokenTypes::LPAREN, std::string{c}});
+            tokens.push_back(Token{TokenType::LPAREN, std::string{c}});
             continue;
         }
         if (is_rparent(c))
         {
-            tokens.push_back(Token{TokenTypes::RPAREN, std::string{c}});
+            tokens.push_back(Token{TokenType::RPAREN, std::string{c}});
             continue;
         }
         if (is_operator(c))
@@ -57,9 +57,9 @@ void Lexer::tokenize()
         }
         if ((int)c == -1)
             break;
-        tokens.push_back(Token{TokenTypes::INVALID});
+        tokens.push_back(Token{TokenType::INVALID});
     }
-    tokens.push_back(Token{TokenTypes::END});
+    tokens.push_back(Token{TokenType::END});
 }
 
 bool Lexer::is_operator(char c) const
@@ -106,18 +106,17 @@ void Lexer::Extract_Number()
             c = fgetc(program);
         }
         ungetc(c, program);
-        tokens.push_back(Token{TokenTypes::DOUBLE_LITERAL, res});
+        tokens.push_back(Token{TokenType::DOUBLE_LITERAL, res});
         return;
     }
     else
     {
         ungetc(c, program);
     }
-    tokens.push_back(Token{TokenTypes::INT_LITERAL, res});
+    tokens.push_back(Token{TokenType::INT_LITERAL, res});
 }
 
-void
-Lexer::Extract_Identifier()
+void Lexer::Extract_Identifier()
 {
     char c = fgetc(program);
     std::string res;
@@ -129,24 +128,23 @@ Lexer::Extract_Identifier()
     ungetc(c, program);
     if (lang_reserved_word.contains(res))
     {
-        tokens.push_back(Token{TokenTypes::RESERVEDWORDS, res});
+        tokens.push_back(Token{TokenType::RESERVEDWORDS, res});
         return;
     }
     if (lang_type_names.contains(res))
     {
-        tokens.push_back(Token{TokenTypes::TYPES, res});
+        tokens.push_back(Token{TokenType::TYPES, res});
         return;
     }
     if (res == "true" || res == "false")
     {
-        tokens.push_back(Token{TokenTypes::BOOL_LITERAL, res});
+        tokens.push_back(Token{TokenType::BOOL_LITERAL, res});
         return;
     }
-    tokens.push_back(Token{TokenTypes::INDENTIFIER, res});
+    tokens.push_back(Token{TokenType::INDENTIFIER, res});
 }
 
-void
-Lexer::Extract_Char()
+void Lexer::Extract_Char()
 {
     if (feof(program))
         throw std::runtime_error("Expected char after \'");
@@ -175,11 +173,10 @@ Lexer::Extract_Char()
     c = fgetc(program);
     if (c != '\'')
         throw std::runtime_error("Expected \'.");
-    tokens.push_back(Token{TokenTypes::CHAR_LITERAL, res});
+    tokens.push_back(Token{TokenType::CHAR_LITERAL, res});
 }
 
-void
-Lexer::Extract_String()
+void Lexer::Extract_String()
 {
     if (feof(program))
         throw std::runtime_error("Exprected char after \".");
@@ -209,11 +206,10 @@ Lexer::Extract_String()
         throw std::runtime_error("Expected \"");
     if (c != '\"')
         throw std::runtime_error("Expected \"");
-    tokens.push_back(Token{TokenTypes::STRING_LITERAL, res});
+    tokens.push_back(Token{TokenType::STRING_LITERAL, res});
 }
 
-void
-Lexer::Extract_Operator()
+void Lexer::Extract_Operator()
 {
     char c = fgetc(program);
     std::string res;
@@ -226,5 +222,5 @@ Lexer::Extract_Operator()
         else
             ungetc(c, program);
     }
-    tokens.push_back(Token{TokenTypes::OPERATOR, res});
+    tokens.push_back(Token{TokenType::OPERATOR, res});
 }

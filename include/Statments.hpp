@@ -1,6 +1,9 @@
 #pragma once
 #include "Abstract Syntax Tree.hpp"
 
+struct ExpressionNode;
+struct DeclarationNode;
+
 /*************************************
  *           Statments.hpp           *
  *       DeclarationStatement        *

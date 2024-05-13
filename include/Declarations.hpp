@@ -1,6 +1,8 @@
 #pragma once
 #include "Abstract Syntax Tree.hpp"
 
+struct CompoundStatement;
+
 struct VariableDeclaration : DeclarationNode
 {
     std::string type;
