@@ -13,7 +13,6 @@ public:
     void parse();
     Parser(std::vector<Token> &tokens) : tokenslist(tokens), offset(0){};
 
-private:
     /********************
      *     Service      *
      ********************/

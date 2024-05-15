@@ -14,19 +14,16 @@ struct ASTNode
 struct StatementNode : ASTNode
 {
     virtual ~StatementNode() = default;
-    virtual void accept(Visitor &) = 0;
 };
 
 struct ExpressionNode : ASTNode
 {
     virtual ~ExpressionNode() = default;
-    virtual void accept(Visitor &) = 0;
 };
 
 struct DeclarationNode : ASTNode
 {
     virtual ~DeclarationNode() = default;
-    virtual void accept(Visitor &) = 0;
 };
 
 #include "Expressions.hpp"

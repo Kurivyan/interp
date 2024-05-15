@@ -34,7 +34,6 @@ struct ExpressionStatement : StatementNode
 struct ControlStatement : StatementNode
 {
     virtual ~ControlStatement() = default;
-    virtual void accept(Visitor &) = 0;
 };
 
 struct Continue : ControlStatement
@@ -72,7 +71,6 @@ struct CompoundStatement : StatementNode
 struct ConditionalStatement : StatementNode
 {
     virtual ~ConditionalStatement() = default;
-    virtual void accept(Visitor &) = 0;
 };
 
 struct ifStatement : ConditionalStatement
@@ -91,7 +89,6 @@ struct ifStatement : ConditionalStatement
 struct IterativeStatement : StatementNode
 {
     virtual ~IterativeStatement() = default;
-    virtual void accept(Visitor &) = 0;
 };
 
 struct whileStatement : IterativeStatement

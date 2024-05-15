@@ -3,6 +3,7 @@
 #include <memory>
 #include "lexer.hpp"
 #include "parser.hpp"
+#include "visitor.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +14,9 @@ int main(int argc, char *argv[])
 
         Parser parser(lexer.tokens);
         parser.parse();
+
+        Printer printer;
+        printer.print(parser.ASTresult[0]);
     }
     else
     {

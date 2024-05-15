@@ -29,9 +29,9 @@ struct UnaryExpression : ExpressionNode
     void accept(Visitor &);
 };
 
-struct PrefixExpression : UnaryExpression
+struct PostfixExpression : UnaryExpression
 {
-    void accept(Visitor &) override;
+    void accept(Visitor &);
 };
 
 /***************************************

@@ -21,7 +21,7 @@ struct Visitor
     virtual void visit(forStatement &) = 0;
 
     virtual void visit(BinaryExpression &) = 0;
-    virtual void visit(PrefixExpression &) = 0;
+    virtual void visit(UnaryExpression &) = 0;
     virtual void visit(PostfixExpression &) = 0;
     virtual void visit(FunctionExpression &) = 0;
     virtual void visit(IdentifierNode &) = 0;
@@ -48,7 +48,7 @@ struct Printer : Visitor
     virtual void visit(forStatement &);
 
     virtual void visit(BinaryExpression &);
-    virtual void visit(PrefixExpression &);
+    virtual void visit(UnaryExpression &);
     virtual void visit(PostfixExpression &);
     virtual void visit(FunctionExpression &);
     virtual void visit(IdentifierNode &);
