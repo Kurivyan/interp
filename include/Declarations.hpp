@@ -5,6 +5,7 @@ struct CompoundStatement;
 
 struct VariableDeclaration : DeclarationNode
 {
+    VariableDeclaration(std::string &type, std::string &name) : type(type), name(name), initializer(nullptr) {}
     std::string type;
     std::string name;
     std::shared_ptr<ExpressionNode> initializer;

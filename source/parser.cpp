@@ -90,13 +90,16 @@ std::shared_ptr<StatementNode> Parser::ExpectStatement()
 
 std::shared_ptr<VariableDeclaration> Parser::parse_variabledeclaration()
 {
-    std::shared_ptr<VariableDeclaration> res;
-    res->type = tokenslist[offset].name;
+
+    std::string type = tokenslist[offset].name;
     offset++;
-    res->name = tokenslist[offset].name;
+    std::string name = tokenslist[offset].name;
     offset++;
     if (MatchToken(TokenType::OPERATOR, ";"))
-        return res;
+    {
+        ++offset;
+        return std::make_shared<VariableDeclaration>(VariableDeclaration(type, name));
+    }
     return nullptr;
 }
 
