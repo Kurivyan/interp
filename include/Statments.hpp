@@ -1,5 +1,5 @@
 #pragma once
-#include "Abstract Syntax Tree.hpp"
+#include "AbstractSyntaxTree.hpp"
 
 struct ExpressionNode;
 struct DeclarationNode;
@@ -11,7 +11,8 @@ struct DeclarationNode;
 
 struct DeclarationStatment : StatementNode
 {
-    std::shared_ptr<VariableDeclaration> expression;
+    std::shared_ptr<DeclarationNode> expression;
+    void accept(Visitor &);
 };
 
 /*************************************
@@ -22,6 +23,7 @@ struct DeclarationStatment : StatementNode
 struct ExpressionStatement : StatementNode
 {
     std::shared_ptr<ExpressionNode> expression;
+    void accept(Visitor &);
 };
 
 /*************************************
@@ -32,19 +34,23 @@ struct ExpressionStatement : StatementNode
 struct ControlStatement : StatementNode
 {
     virtual ~ControlStatement() = default;
+    virtual void accept(Visitor &) = 0;
 };
 
 struct Continue : ControlStatement
 {
+    void accept(Visitor &);
 };
 
 struct Break : ControlStatement
 {
+    void accept(Visitor &);
 };
 
 struct Return : ControlStatement
 {
     std::shared_ptr<ExpressionNode> return_value;
+    void accept(Visitor &);
 };
 
 /*************************************
@@ -55,6 +61,7 @@ struct Return : ControlStatement
 struct CompoundStatement : StatementNode
 {
     std::vector<std::shared_ptr<StatementNode>> body;
+    void accept(Visitor &);
 };
 
 /*************************************
@@ -65,6 +72,7 @@ struct CompoundStatement : StatementNode
 struct ConditionalStatement : StatementNode
 {
     virtual ~ConditionalStatement() = default;
+    virtual void accept(Visitor &) = 0;
 };
 
 struct ifStatement : ConditionalStatement
@@ -72,6 +80,7 @@ struct ifStatement : ConditionalStatement
     std::shared_ptr<ExpressionNode> condition;
     std::shared_ptr<StatementNode> body;
     std::shared_ptr<StatementNode> else_body;
+    void accept(Visitor &);
 };
 
 /*************************************
@@ -82,22 +91,26 @@ struct ifStatement : ConditionalStatement
 struct IterativeStatement : StatementNode
 {
     virtual ~IterativeStatement() = default;
+    virtual void accept(Visitor &) = 0;
 };
 
 struct whileStatement : IterativeStatement
 {
     std::shared_ptr<ExpressionNode> condition;
     std::shared_ptr<StatementNode> body;
+    void accept(Visitor &);
 };
 
 struct doWhileStatement : IterativeStatement
 {
     std::shared_ptr<ExpressionNode> condition;
     std::shared_ptr<StatementNode> body;
+    void accept(Visitor &);
 };
 
 struct forStatement : IterativeStatement
 {
     std::vector<std::shared_ptr<ExpressionNode>> conditions;
     std::shared_ptr<StatementNode> body;
+    void accept(Visitor &);
 };

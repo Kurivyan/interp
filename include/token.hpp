@@ -2,12 +2,12 @@
 #include <string>
 enum class TokenType
 {
-    INDENTIFIER,
-    RESERVEDWORDS,
+    IDENTIFIER,
+    RESERVEDWORD,
     OPERATOR,
     LPAREN,
     RPAREN,
-    TYPES,
+    TYPE,
     INT_LITERAL,
     DOUBLE_LITERAL,
     CHAR_LITERAL,

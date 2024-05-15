@@ -1,5 +1,5 @@
 #pragma once
-#include "Abstract Syntax Tree.hpp"
+#include "AbstractSyntaxTree.hpp"
 
 struct CompoundStatement;
 
@@ -8,12 +8,14 @@ struct VariableDeclaration : DeclarationNode
     std::string type;
     std::string name;
     std::shared_ptr<ExpressionNode> initializer;
+    void accept(Visitor &);
 };
 
 struct FunctionDeclaration : DeclarationNode
 {
     std::string return_type;
     std::string name;
-    std::vector<std::shared_ptr<VariableDeclaration>> arguments;
+    std::vector<std::shared_ptr<DeclarationNode>> arguments;
     std::shared_ptr<CompoundStatement> body;
+    void accept(Visitor &);
 };

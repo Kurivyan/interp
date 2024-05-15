@@ -57,9 +57,9 @@ void Lexer::tokenize()
         }
         if ((int)c == -1)
             break;
-        tokens.push_back(Token{TokenType::INVALID});
+        tokens.push_back(Token{TokenType::INVALID, ""});
     }
-    tokens.push_back(Token{TokenType::END});
+    tokens.push_back(Token{TokenType::END, ""});
 }
 
 bool Lexer::is_operator(char c) const
@@ -128,12 +128,12 @@ void Lexer::Extract_Identifier()
     ungetc(c, program);
     if (lang_reserved_word.contains(res))
     {
-        tokens.push_back(Token{TokenType::RESERVEDWORDS, res});
+        tokens.push_back(Token{TokenType::RESERVEDWORD, res});
         return;
     }
     if (lang_type_names.contains(res))
     {
-        tokens.push_back(Token{TokenType::TYPES, res});
+        tokens.push_back(Token{TokenType::TYPE, res});
         return;
     }
     if (res == "true" || res == "false")
@@ -141,7 +141,7 @@ void Lexer::Extract_Identifier()
         tokens.push_back(Token{TokenType::BOOL_LITERAL, res});
         return;
     }
-    tokens.push_back(Token{TokenType::INDENTIFIER, res});
+    tokens.push_back(Token{TokenType::IDENTIFIER, res});
 }
 
 void Lexer::Extract_Char()
