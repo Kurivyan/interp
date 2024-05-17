@@ -3,12 +3,20 @@
 
 struct CompoundStatement;
 
+struct DeclList
+{
+    DeclList(const std::string &name, const std::shared_ptr<ExpressionNode> &list) : declarator(name), initList(list){};
+    std::string declarator;
+    std::shared_ptr<ExpressionNode> initList;
+    void accept(Visitor &);
+};
+
 struct VariableDeclaration : DeclarationNode
 {
-    VariableDeclaration(std::string &type, std::string &name) : type(type), name(name), initializer(nullptr) {}
+    VariableDeclaration(const std::string &type, std::vector<std::shared_ptr<DeclList>> &declist)
+        : type(type), declaratorlist(declist){};
     std::string type;
-    std::string name;
-    std::shared_ptr<ExpressionNode> initializer;
+    std::vector<std::shared_ptr<DeclList>> declaratorlist;
     void accept(Visitor &);
 };
 

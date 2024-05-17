@@ -11,7 +11,24 @@ void Printer::print(const std::shared_ptr<ASTNode> &root)
 
 void Printer::visit(VariableDeclaration &root)
 {
-    std::cout << root.type << " " << root.name << " " << ";\n";
+    std::cout << root.type << " ";
+    for (int i = 0; i < root.declaratorlist.size(); i++)
+    {
+        root.declaratorlist[i]->accept(*this);
+        if (i != root.declaratorlist.size() - 1)
+            std::cout << ", ";
+    }
+    std::cout << ";";
+    return;
+}
+void Printer::visit(DeclList &root)
+{
+    std::cout << root.declarator;
+    if (root.initList != nullptr)
+    {
+        std::cout << " = ";
+        root.initList->accept(*this);
+    }
     return;
 }
 void Printer::visit(FunctionDeclaration &root) { return; }
@@ -32,5 +49,9 @@ void Printer::visit(UnaryExpression &root) { return; }
 void Printer::visit(PostfixExpression &root) { return; }
 void Printer::visit(FunctionExpression &root) { return; }
 void Printer::visit(IdentifierNode &root) { return; }
-void Printer::visit(Literal &root) { return; }
+void Printer::visit(Literal &root)
+{
+    std::cout << root.value;
+    return;
+}
 void Printer::visit(AssignmentExpression &root) { return; }

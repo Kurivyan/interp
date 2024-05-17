@@ -9,6 +9,11 @@ void VariableDeclaration::accept(Visitor &visitor)
     visitor.visit(*this);
 }
 
+void DeclList::accept(Visitor &visitor)
+{
+    visitor.visit(*this);
+}
+
 void FunctionDeclaration::accept(Visitor &visitor)
 {
     visitor.visit(*this);

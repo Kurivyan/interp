@@ -7,6 +7,7 @@
 struct Visitor
 {
     virtual void visit(VariableDeclaration &) = 0;
+    virtual void visit(DeclList &) = 0;
     virtual void visit(FunctionDeclaration &) = 0;
 
     virtual void visit(DeclarationStatment &) = 0;
@@ -34,6 +35,7 @@ struct Printer : Visitor
     void print(const std::shared_ptr<ASTNode> &);
 
     virtual void visit(VariableDeclaration &);
+    virtual void visit(DeclList &);
     virtual void visit(FunctionDeclaration &);
 
     virtual void visit(DeclarationStatment &);

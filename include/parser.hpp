@@ -62,6 +62,8 @@ public:
      *   Declarations   *
      ********************/
     std::shared_ptr<DeclarationNode> ExpectDeclaration();
+    std::shared_ptr<DeclList> ExpectDeclList();
+    std::shared_ptr<DeclList> parse_DeclList();
     std::shared_ptr<VariableDeclaration> parse_variabledeclaration();
     std::shared_ptr<FunctionDeclaration> parse_functiondeclaration();
 };

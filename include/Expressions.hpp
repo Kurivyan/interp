@@ -64,6 +64,7 @@ struct IdentifierNode : ExpressionNode
 
 struct Literal : ExpressionNode
 {
+    Literal(const std::string &val) : value(val){};
     std::string value; // Constant Value
     void accept(Visitor &);
 };

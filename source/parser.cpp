@@ -15,7 +15,9 @@ bool Parser::MatchToken(const TokenType &type, const std::string &name)
     }
 }
 
-bool Parser::MatchToken(const std::vector<Token>::iterator &it, const TokenType &type, const std::string &name)
+bool Parser::MatchToken(const std::vector<Token>::iterator &it,
+                        const TokenType &type,
+                        const std::string &name)
 {
     if (name.empty())
     {
@@ -55,7 +57,9 @@ std::shared_ptr<DeclarationNode> Parser::ExpectDeclaration()
         if (MatchToken(it, TokenType::IDENTIFIER))
         {
             ++it;
-            if (MatchToken(it, TokenType::OPERATOR, "=") || MatchToken(it, TokenType::OPERATOR, ";"))
+            if (MatchToken(it, TokenType::OPERATOR, "=") ||
+
+                MatchToken(it, TokenType::OPERATOR, ";"))
             {
                 return parse_variabledeclaration();
             }
@@ -75,8 +79,17 @@ std::shared_ptr<DeclarationNode> Parser::ExpectDeclaration()
     }
     return nullptr;
 }
+
 std::shared_ptr<ExpressionNode> Parser::ExpectExpression()
 {
+    std::vector<Token>::iterator it = tokenslist.begin() + offset;
+    if (MatchToken(it, TokenType::BOOL_LITERAL) ||
+        MatchToken(it, TokenType::CHAR_LITERAL) ||
+        MatchToken(it, TokenType::DOUBLE_LITERAL) ||
+        MatchToken(it, TokenType::INT_LITERAL))
+    {
+        return parse_literal();
+    }
     return nullptr;
 }
 std::shared_ptr<StatementNode> Parser::ExpectStatement()
@@ -93,17 +106,71 @@ std::shared_ptr<VariableDeclaration> Parser::parse_variabledeclaration()
 
     std::string type = tokenslist[offset].name;
     offset++;
+    std::vector<std::shared_ptr<DeclList>> declList;
+    std::shared_ptr<DeclList> declaration = ExpectDeclList();
+    while (declaration != nullptr)
+    {
+        declList.push_back(declaration);
+        declaration = ExpectDeclList();
+    }
+    return std::make_shared<VariableDeclaration>(VariableDeclaration(type, declList));
+}
+
+std::shared_ptr<DeclList> Parser::ExpectDeclList()
+{
+    if (MatchToken(TokenType::OPERATOR, ",") || MatchToken(TokenType::OPERATOR, ";"))
+        offset++;
+    std::vector<Token>::iterator it = tokenslist.begin() + offset;
+    if (MatchToken(it, TokenType::IDENTIFIER))
+    {
+        it++;
+        if (MatchToken(it, TokenType::OPERATOR))
+        {
+            return parse_DeclList();
+        }
+        else
+        {
+            std::runtime_error("Expected ';' or declaration expression after identifier.");
+        }
+    }
+    else
+    {
+        if (MatchToken(it, TokenType::OPERATOR, ";"))
+            return nullptr;
+        else
+            std::runtime_error("Expected ';'.");
+    }
+    return nullptr;
+}
+
+std::shared_ptr<DeclList> Parser::parse_DeclList()
+{
     std::string name = tokenslist[offset].name;
     offset++;
-    if (MatchToken(TokenType::OPERATOR, ";"))
+    if (MatchToken(TokenType::OPERATOR, "="))
     {
-        ++offset;
-        return std::make_shared<VariableDeclaration>(VariableDeclaration(type, name));
+        offset++;
+        std::shared_ptr<ExpressionNode> init = ExpectExpression();
+        return std::make_shared<DeclList>(name, init);
     }
+    else if (MatchToken(TokenType::OPERATOR, ";"))
+        return std::make_shared<DeclList>(name, nullptr);
     return nullptr;
 }
 
 std::shared_ptr<FunctionDeclaration> Parser::parse_functiondeclaration()
 {
+
     return nullptr;
+}
+
+/*****************
+ *  Expressions  *
+ *****************/
+
+std::shared_ptr<Literal> Parser::parse_literal()
+{
+    std::string ret = tokenslist[offset].name;
+    ++offset;
+    return std::make_shared<Literal>(Literal(ret));
 }

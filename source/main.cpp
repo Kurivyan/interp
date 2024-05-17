@@ -16,7 +16,8 @@ int main(int argc, char *argv[])
         parser.parse();
 
         Printer printer;
-        printer.print(parser.ASTresult[0]);
+        for (int i = 0; i < (int)parser.ASTresult.size(); i++)
+            printer.print(parser.ASTresult[i]);
     }
     else
     {
